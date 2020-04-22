@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+#%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%#
+#%!%!% ----------------------------------- ElaStic_Setup ----------------------------------- %!%!%#
+#%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%#
+#
+# AUTHOR:
+# Rostam Golesorkhtabar
+# r.golesorkhtabar@gmail.com
+# 
+# DATE: 
+# Tue Jan 01 00:00:00 2013
+#
+# SYNTAX:
+# python ElaStic_Setup.py
+#        ElaStic_Setup
+# 
+# EXPLANATION:
+# 
+#__________________________________________________________________________________________________
+
+import sys
+import os
+print'\
+\n     +---------------------------------------------------------------+\
+\n     |***************************************************************|\
+\n     |*                                                             *|\
+\n     |*                 WELCOME TO THE ElaStic CODE                 *|\
+\n     |*        ElaStic Version 1.0, Release Date: 2013-01-01        *|\
+\n     |*                                                             *|\
+\n     |***************************************************************|\
+\n     +---------------------------------------------------------------+'
+
+print '\
+\n     Which DFT code would you like to apply for the calculations? \
+\n     exciting  ---------=>  1                                     \
+\n     WIEN2k    ---------=>  2                                     \
+\n     Quantum ESPRESSO --=>  3'
+
+num = input('>>>> Please choose (1, 2, or 3): ')
+if (num != 1 and num != 2 and num != 3 ):
+    sys.exit('\n.... Oops ERROR: Choose 1, 2, or 3 \n')
+
+if (num == 1): cod = 'exciting'
+if (num == 2): cod = 'WIEN2k'
+if (num == 3): cod = 'ESPRESSO'
+
+if (cod == 'exciting'): os.system('ElaStic_Setup_exciting')
+if (cod == 'WIEN2k'  ): os.system('ElaStic_Setup_WIEN2k'  )
+if (cod == 'ESPRESSO'): os.system('ElaStic_Setup_ESPRESSO')

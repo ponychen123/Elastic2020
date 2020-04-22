@@ -1,0 +1,168 @@
+ ABOUT
+=======
+
+                  << Welcome to ElaStic_1.0 >>
+
+This software package allows you to obtain full second-order elastic tensors (elastic constants)
+for all crystal lattice types and third-order elastic constants for cubic, hexagonal, and 
+rhombohedral crystals. 
+This code is written in Python programming language and uses the SGROUP tool as symmetry and 
+space-group calculator and utilizes Exciting, Wien2k and Quantum Espresso density-functional codes 
+for energy and stress calculations.
+
+ DESCRIPTION
+=============
+
+     In order to use "ElaStic" software package, please follow the steps below:
+STEP 0.1:
+     The "ElaSticROOT" shell variable must be set by the user. For instance, add the following 
+     line with the correct "ElaStic" path, in the ".bashrc" file:
+     export ElaSticROOT=/home/dir1/dir2/ElaStic
+
+STEP 0.2:
+     Download and install "SGROUP" program:
+     This program is a utility which allows "ElaStic" to determine the space-group and symmetry 
+     operations of a crystal structure. More information can be found in: 
+
+     Programmers       : B.Z. Yanchitsky, A.N. Timoshevskii
+     Download Link     : http://cpc.cs.qub.ac.uk/summaries/adon
+     Journal Reference : Comput. Phys. Commun. 139(2001)235
+
+     You can also find "SGROUP" program in the file "adon_v1_0.tar.gz" in "ElaStic"
+     directory: Go to the "ElaStic" directory or where you saved this zipped file and execute the 
+     following commands ($ means command line in a terminal):
+
+     $ tar xfvp adon_v1_0.tar.gz
+     $ cd SpaceGroups
+     $ make
+     $ cp sgroup $ElaSticROOT
+
+     You can find more information about "SGROUP" program in "SpaceGroups/README" file.
+
+STEP 1.1:
+     In order to generate input files for a series of distorted structure, run the following script 
+     from the command line:
+
+     $ ElaStic_Setup
+
+     This program requires a structural input file which can be the same as the input file of the 
+     following DFT codes:
+
+     exciting         (http://exciting-code.org/)
+     WIEN2k           (http://www.wien2k.at/)
+     Quantum ESPRESSO (http://www.quantum-espresso.org/)
+
+     Once the input file is ready, "ElaStic" requires these values:
+
+     -The order of the elastic constants which you are interested in calculating.
+     -The absolute value of the maximum strain.
+     -Number of deformed structures equally spaced between the maximum negative strain and the 
+      maximum positive one.
+     
+     Entries must be typed on the screen when they are requested.
+
+STEP 1.2:
+     Calculate the energy or stress tensor of deformed structure using one of the mentioned DFT 
+     codes.
+
+     NOTICE to "WIEN2k" users:
+     A shell script program is provided under the name "ElaStic_WIEN2k_init" which allows you 
+     to initialize the deformed structures automatically.
+     Before executing this program, you must specify input variables of "WIEN2k" calculations.
+     It is recommended to copy this file to the directory where "Dst??" directories, e.g. Dst01, 
+     exist. Then, modify line 23 of this program according to the accuracy of your calculations.
+
+     The "WIEN2k_init_lapw_silent" script is the modified script file of the "init_lapw" program.
+     You find FLAGS of "WIEN2k_init_lapw_silent" program if you write following command in terminal:
+
+     $ WIEN2k_init_lapw_silent -H
+
+     Once the WIEN2k calculations are finished, you can run the following scripts to save and clean
+     your calculations.
+    
+     $ ElaStic_Save_Clean_WIEN2k
+
+     NOTICE to "Quantum ESPRESSO" users:
+     The output file must be saved under same name of the input file but with ".out" extension. 
+     For instance, if a given input file is named as "Dst02_25.in", the output file must be saved
+     as "Dst02_25.out".
+
+STEP 2.1:
+     In order to calculate elastic constants accurately, you have to analyze your calculations,
+     first.
+     The script "ElaStic_Analyze" allows you to analyze the dependence of the calculated 
+     derivatives of the "energy-vs-strain" or "energy-vs-stress" curves on the two following
+     parameters:
+
+     -The range of distortions.
+     -The degree of the polynomial fit.
+
+     The script can be run giving the following command in terminal:
+
+     $ ElaStic_Analyze
+     
+     At this point, "xmgrace" plots automatically appear on your screen. For each distortion,
+     you can find the best distortion range and the best order of polynomial fit. You can find more
+     details about these issues in "ElaStic_Paper.pdf".
+
+STEP 2.2:
+     In order to obtain the numerical values of the second- and third-order elastic constants,
+     you should edit the "ElaStic_2nd.in" and "ElaStic_3rd.in", respectively.
+     
+     In each row of these files, you should insert a value for "eta_max" and "Fit_order". According 
+     to the result of the visual analysis of the figures in the previous step, these two values are
+     extracted by considering the plateau regions of the corresponding plot: "eta_max" is a value 
+     of maximum distortion located in the plateau region of the curve representing the polynomial
+     fit of order "Fit_order".
+
+STEP 3.0:
+     At this stage, in order to calculate elastic constants and moduli, run the following script:
+
+     $ ElaStic_Result
+
+     Numerical values of the elastic constants are output in "ElaStic_2nd.out" and
+     "ElaStic_3rd.out" files for the second- and third-order elastic constants, respectively.
+
+ POST-PROCESSING PROGRAMS
+==========================
+
+     1- "ElaStic_xyz2XYZ" is a program to transform elastic constants from one Cartesian coordinate
+     to another Cartesian systems.
+     In order to transform elastic constant tensor from an old Cartesian coordinate system to a new
+     one, "ElaStic" requires two input files:
+
+     i - The output file of "ElaStic" (ElaStic_2nd.out).
+     ii- A file with "Transformation_Matrix" name. This file contains 3X3 matrix in following
+     format:
+                              i'.i   i'.j   i'.k
+                              j'.i   j'.j   j'.k
+                              k'.i   k'.j   k'.k
+     where i', j' and k' are the unit vectors in the new system and i, j and k are the
+     unit vectors in old Cartesian coordinate systems. Dot (.) indicates the "dot product" of two 
+     vectors.
+
+     2- "ElaStic_Analyze_B0" is a program to check the dependence of the bulk modulus (B0) and its 
+     pressure-derivative (B0') on the range of distortion and the degree of the polynomial fit
+     parameters.
+     This program requires an input file, with an arbitrary name, which contains volume and energy 
+     value in two columns. 
+
+ REFRANCE PAPER
+================
+
+ElaStic: A tool for calculating second-order elastic constants from first principles
+Computer Physics Communications 184, 1861-1873 (2013).
+This article contains method, the numerical algorithm and results which are calculated with ElaStic.
+In case of publication, if you used ElaStic for any purpose, please cite this reference. 
+
+ CONTACT
+=========
+
+If you have any suggestion or you found any bug, please write to  
+
+E-mail: rostam@physik.hu-berlin.de
+
+Rostam Golesorkhtabar
+Humboldt-Universität zu Berlin
+Institut für Physik und IRIS Adlershof, Theoretische Festkörperphysik
+Zum Grossen Windkanal 6, 12489 Berlin, Germany.
