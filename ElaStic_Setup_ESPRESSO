@@ -160,9 +160,9 @@ ibravDic = {            \
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%--- Reading the method of the elastic constants calculations ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%
-print '\n     Energy  ---=>  1    \
-       \n     Stress  ---=>  2    '
-num = input('>>>> Please choose the method of the calculation (choose 1 or 2): ')
+print('\n     Energy  ---=>  1    \
+       \n     Stress  ---=>  2    ')
+num = int(input('>>>> Please choose the method of the calculation (choose 1 or 2): '))
 if (num != 1 and num != 2):
     sys.exit("\n.... Oops ERROR: Choose '1' or '2' \n")
 if (num == 1 ): mthd = 'Energy'
@@ -170,19 +170,19 @@ if (num == 2 ): mthd = 'Stress'
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%--- Reading the order of the elastic constants ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%
-print '\n     2nd  ---=>  2    \
-       \n     3rd  ---=>  3    '
-ordr = input('>>>> Please choose the order of the elastic constant (choose 2 or 3): ')
+print('\n     2nd  ---=>  2    \
+       \n     3rd  ---=>  3    ')
+ordr = int(input('>>>> Please choose the order of the elastic constant (choose 2 or 3): '))
 if (ordr != 2 and ordr != 3 ):
     sys.exit("\n.... Oops ERROR: Choose '2' or '3' \n")
 #--------------------------------------------------------------------------------------------------
 
 #%!%!%--- Checking the input file exist ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!
 if (os.path.exists('ElaStic_PW.in')):
-    print '\n.... Oops NOTICE: ElaStic found "ElaStic_PW.in". It will be used as input file.'
+    print('\n.... Oops NOTICE: ElaStic found "ElaStic_PW.in". It will be used as input file.')
     INF = 'ElaStic_PW.in'
 else:
-    INF = raw_input('\n>>>> Please enter the name of the Quantum-ESPRESSO input file: ')
+    INF = input('\n>>>> Please enter the name of the Quantum-ESPRESSO input file: ')
     if (os.path.exists(INF) == False):
         sys.exit('\n.... Oops ERROR: There is NO '+ INF +' file !?!?!?    \n')
 fi = open(INF, 'r')
@@ -275,32 +275,29 @@ if (ibrav == 0):
     if (EIF.upper().find('CELL_PARAMETERS') == -1 ):
         sys.exit('\n.... Oops ERROR: "CELL_PARAMETERS" must be specified for the case ibrav = 0'\
                  '\n                 Visit http://www.quantum-espresso.org !?!?!? \n')
-    for nl, line in enumerate(EIF.split('\n')):
-        if (line.find('CELL_PARAMETERS') != -1): break
-    if (line.lower().find('hexagonal') != -1):
-        sys.exit('\n.... Oops SORRY: "CELL_PARAMETERS" must be specified in "cubic" coordinate.'\
-                 '\n                 The "hexagonal" coordinate has NOT been implemented yet.\n')
-
-    fi = open(INF,'r')
-    for i in range(nl+1):
-        fi.readline()
-    M  = []
-    nl = 0
-
+    EIF2 = EIF.split('\n')
+    for nl, line in enumerate(EIF2):
+        if (line.find('CELL_PARAMETERS') != -1):
+            M = []
+            nx = 0
+            nb = 1
+            while (nx < 3):
+                if (nl+nb > len(EIF2)):
+                    break
+                tmp = EIF2(nl+nb).strip()
+                if (tmp  == ''):
+                    pass
+                tmp2 = tmp.split()
+                if (len(tmp2) == 3):
+                    nx += 1
+                    M.append(tmp2)
+                else:
+                    sys.exit("ERROR! CELL_PARAMETERS should be a 3 x 3\
+                            matrix!!!!!\n")
+                nb += 1
+            break
     CP = zeros((3,3))
-    while (nl < 3):
-        line = fi.readline()
-        if (line == ''): break 
-        line = line.strip().split()
-        if (len(line) == 3):
-            nl +=1
-            M.append(line)
-        elif (len(line) == 0): pass
-        else: sys.exit('\n.... Oops ERROR: "CELL_PARAMETERS" are NOT defined correctly !?!?!?'\
-                       '\n                 Visit http://www.quantum-espresso.org \n')
-    
-    fi.close()
-    if (nl < 3):
+    if (nx < 3):
         sys.exit('\n.... Oops ERROR: "CELL_PARAMETERS" are NOT complete in the input file !?!?!?'\
                  '\n                 Visit http://www.quantum-espresso.org \n')
     for i in range(3):
