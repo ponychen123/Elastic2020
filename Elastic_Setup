@@ -738,6 +738,8 @@ for i in range(1,len(SYSTEMlist)-1,3):
         print('   '+'%-16s'%(SYSTEMlist[i])+' = '+SYSTEMlist[i+2],file=pwi)
     else:
         print('   '+SYSTEMlist[i]+' = '+SYSTEMlist[i+2],file=pwi)
+if (ibrav == 0):
+    print('   '+'%-16s'%("celldm(1)")+' = '+str(celldm1),file=pwi)
 print(' /',file=pwi)
 
 print('&ELECTRONS',file=pwi)
