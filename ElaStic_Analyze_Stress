@@ -278,12 +278,12 @@ for i in Lag_strain_list:
 
                         fstres.close()
                     else: 
-                        print '\n.... Oops WARNING: No Stresses in "'+ \
-                              Dstn_num +'.out" file !?!?!?\n'
+                        print('\n.... Oops WARNING: No Stresses in "'+ \
+                              Dstn_num +'.out" file !?!?!?\n')
 
                 else: 
-                    print '\n.... Oops WARNING: Where is the "'+ \
-                           Dstn_num +'.out" file !?!?!?\n'
+                    print('\n.... Oops WARNING: Where is the "'+ \
+                           Dstn_num +'.out" file !?!?!?\n')
 
 #--------------------------------------------------------------------------------------------------
             dm  = def_matrix
@@ -351,8 +351,8 @@ for i in range(1, NoD+1):
             fD = open(Dstn+'_'+LSi_dic[l]+'_d2S.dat','w')
 
         fE = open(Dstn+'_'+LSi_dic[l]+'_CVe.dat','w')
-        print('# Max. eta    SUM(Cij) \n#',file=FD)
-        print('# Max. eta    Cross-Validation error   \n#',file=FE)
+        print('# Max. eta    SUM(Cij) \n#',file=fD)
+        print('# Max. eta    Cross-Validation error   \n#',file=fE)
 
         for j in range(ordr+3, ordr-2, -2):
             if  (j == 2): nth = '2nd'
@@ -360,8 +360,8 @@ for i in range(1, NoD+1):
             else:
                 nth = str(j) + 'th'
 
-            print('\n# '+ nth +' order fit.',file=FD)
-            print('\n# '+ nth +' order fit.',file=FE)
+            print('\n# '+ nth +' order fit.',file=fD)
+            print('\n# '+ nth +' order fit.',file=fE)
 
             #--- Reading the input files ----------------------------------------------------------
             nl    = 0
@@ -420,7 +420,7 @@ for i in range(1, NoD+1):
                 if (ordr == 3):
                     Cij = coeffs[j-2] * CONV * 0.001 # in TPa unit
 
-                print('%13.10f'%emax, '%18.6f'%Cij,file=FD)
+                print('%13.10f'%emax, '%18.6f'%Cij,file=fD)
                 if (abs(strain[0]+emax) < 1.e-7):
                     strain.pop(0)
                     stress.pop(0)
@@ -450,7 +450,7 @@ for i in range(1, NoD+1):
                     S = S + (Yfit-Y)**2
 
                 CV = sqrt(S/len(strain))
-                print('%13.10f'%emax, CV,file=FE)
+                print('%13.10f'%emax, CV,file=fE)
 
                 if (abs(strain[0]+emax) < 1.e-7):
                     strain.pop(0)
@@ -462,10 +462,11 @@ for i in range(1, NoD+1):
         fE.close()
 
         #--- Plotting -----------------------------------------------------------------------------
+    
         if (os.path.exists('Grace.par') == False):
             os.system("cp -f $ElaSticROOT/Grace.par .")
 
-        Gf    = open('Grace.par', 'r')
+        Gf    = open("Grace.par", 'r')
         Glines= Gf.readlines()
         Gf.close()
 
@@ -485,13 +486,13 @@ for i in range(1, NoD+1):
         TMP.insert(74,'    s1 legend  " n = '+str(ordr+1)+'"\n')
         TMP.insert(66,'    s0 legend  " n = '+str(ordr+3)+'"\n')
         TMP.insert(29,'    subtitle "Plot for '+ Dstn +'_'+LSi_dic[l]+' , n = Order of polynomial fit"\n')
-
+    
         GdE = open(Dstn+'_'+LSi_dic[l]+'_d'+str(ordr-1)+'S.par', 'w')
         for k in range(len(TMP)):
-            print >>GdE, TMP[k],
+            print(TMP[k],file=GdE)
         GdE.close()
 
-        os.system('xmgrace '+Dstn+'_'+LSi_dic[l]+'_d'+str(ordr-1)+'S.dat -param '+Dstn+'_'+LSi_dic[l]+'_d1S.par -saveall '\
+        os.system('xmgr '+Dstn+'_'+LSi_dic[l]+'_d'+str(ordr-1)+'S.dat -param '+Dstn+'_'+LSi_dic[l]+'_d1S.par -saveall '\
                             +Dstn+'_'+LSi_dic[l]+'_d'+str(ordr-1)+'S.agr &')
 
         TMP = []
@@ -508,10 +509,10 @@ for i in range(1, NoD+1):
 
         CVe = open(Dstn+'_'+LSi_dic[l]+'_CVe.par', 'w')
         for k in range(len(TMP)):
-            print >>CVe, TMP[k],
+            print(TMP[k],file=CVe)
         CVe.close()
 
-        os.system('grace '+Dstn+'_'+LSi_dic[l]+'_CVe.dat -param '+Dstn+'_'+LSi_dic[l]+'_CVe.par -saveall '\
+        os.system('xmgr '+Dstn+'_'+LSi_dic[l]+'_CVe.dat -param '+Dstn+'_'+LSi_dic[l]+'_CVe.par -saveall '\
                             +Dstn+'_'+LSi_dic[l]+'_CVe.agr &')
 
 os.chdir('../')

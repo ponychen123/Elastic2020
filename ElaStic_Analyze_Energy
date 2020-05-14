@@ -202,7 +202,7 @@ for i in range(1, ECs+1):
                     strain ='+%12.10f'%r
                 else:
                     strain = '%13.10f'%r
-                print >>f, strain,'   ', energy
+                print(strain,'   ', energy,file=f)
             os.chdir('../')
     f.close()
     os.chdir('../')
@@ -244,8 +244,8 @@ for i in range(1, ECs+1):
         fD = open(Dstn+'_d3E.dat', 'w')
 
     fE = open(Dstn+'_CVe.dat', 'w')
-    print >> fD, '# Max. eta    SUM(Cij) \n#'
-    print >> fE, '# Max. eta    Cross-Validation Error   \n#'
+    print('# Max. eta    SUM(Cij) \n#',file=FD)
+    print('# Max. eta    Cross-Validation Error   \n#',file=FE)
 
     for j in range(ordr+4, ordr-1, -2):
         if  (j == 2): nth = '2nd'
@@ -253,8 +253,8 @@ for i in range(1, ECs+1):
         else:
             nth = str(j) + 'th'
 
-        print >> fD, '\n# '+ nth +' order fit.'
-        print >> fE, '\n# '+ nth +' order fit.'
+        print('\n# '+ nth +' order fit.',file=FD)
+        print('\n# '+ nth +' order fit.',file=FE)
 
         #--- Reading the input files --------------------------------------------------------------
         eta_ene= open(Dstn+'_Energy.dat', 'r')
@@ -292,7 +292,7 @@ for i in range(1, ECs+1):
             if (ordr == 3):
                 Cij  = coeffs[j-3]*CONV/V0 * 0.001 # in TPa unit
 
-            print >>fD, '%13.10f'%emax, '%18.6f'%Cij
+            print('%13.10f'%emax, '%18.6f'%Cij,file=FD)
 
             if (abs(strain[0]+emax) < 1.e-7):
                 strain.pop(0); energy.pop(0)
@@ -324,7 +324,7 @@ for i in range(1, ECs+1):
                 S    = S + (Yfit-Y)**2
 
             CV = sqrt(S/len(strain))
-            print >>fE, '%13.10f'%emax, CV
+            print('%13.10f'%emax, CV,file=FE)
 
             if (abs(strain[0]+emax) < 1.e-7):
                 strain.pop(0)
@@ -362,7 +362,7 @@ for i in range(1, ECs+1):
 
     GdE = open(Dstn+'_d'+str(ordr)+'E.par', 'w')
     for l in range(len(TMP)):
-        print >>GdE, TMP[l],
+        print(TMP[l],file=GdE)
     GdE.close()
 
     os.system('xmgrace '+ Dstn +'_d'+str(ordr)+'E.dat -param '  + \
@@ -383,10 +383,10 @@ for i in range(1, ECs+1):
 
     CVe = open(Dstn+'_CVe.par', 'w')
     for k in range(len(TMP)):
-        print >>CVe, TMP[k],
+        print(TMP[k],file=CVe)
     CVe.close()
 
-    os.system('xmgrace '+ Dstn +'_CVe.dat -param '+ Dstn +'_CVe.par -saveall '+ Dstn +'_CVe.agr &')
+    os.system('grace '+ Dstn +'_CVe.dat -param '+ Dstn +'_CVe.par -saveall '+ Dstn +'_CVe.agr &')
 
 os.chdir('../')
 
@@ -401,7 +401,7 @@ for i in range(1, ECs+1):
         Dstn = 'Dst0'+str(i)
     else:
         Dstn = 'Dst' +str(i)
-    print >>fri, Dstn+'    eta_max    Fit_order'
+    print(Dstn+'    eta_max    Fit_order',file=fri)
 fri.close()
 #--------------------------------------------------------------------------------------------------
 os.system('rm -f Energy-vs-Strain/Grace.par')
