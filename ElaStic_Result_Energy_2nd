@@ -447,63 +447,61 @@ AVR= 100.*(GV-GR)/(GV+GR)
 
 #%!%!%--- Writing the output file ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!
 fo = open('ElaStic_2nd.out', 'w')
-print >>fo,  '    The output of ElaStic code                                              \n'\
+print(  '    The output of ElaStic code                                              \n'\
              '    Today is '+ time.asctime() +                                           '\n'\
                                                                                          '\n'\
              '    Symmetry of the second-order elastic constant matrix in Voigt notation. \n'\
                 + head[LC] +                                                             '\n'\
-             '    Elastic constant (stiffness) matrix in GPa:                             \n'
+             '    Elastic constant (stiffness) matrix in GPa:                             \n',file=fo)
 
 for i in range(0,6):
-    print >>fo, '',
+    print('',file=fo)
     for j in range(0,6):
-        print >>fo, '%11.1f'%(C[i,j]),
-    print >>fo
+        print('%11.1f'%(C[i,j]),file=fo,end=' ')
 
-print >>fo,'\n\n    Elastic compliance matrix in 1/GPa: \n'
+print('\n\n    Elastic compliance matrix in 1/GPa: \n',file=fo)
 
 for i in range(0,6):
-    print >>fo, '',
+    print('',file=fo)
     for j in range(0,6):
-        print >>fo, '%11.5f'%(S[i,j]),
-    print >>fo
+        print('%11.5f'%(S[i,j]),file=fo,end=' ')
 
-print >>fo, '\n'+ lineseparator +'\n'
+print('\n'+ lineseparator +'\n',file=fo)
 
-print >>fo, '    Voigt bulk  modulus, B_V = {0}  GPa'.format('%8.2f'%(BV))
-print >>fo, '    Voigt shear modulus, G_V = {0}  GPa'.format('%8.2f'%(GV)) + '\n'
+print('    Voigt bulk  modulus, B_V = {0}  GPa'.format('%8.2f'%(BV)),file=fo)
+print('    Voigt shear modulus, G_V = {0}  GPa'.format('%8.2f'%(GV)) + '\n',file=fo)
 
-print >>fo, '    Reuss bulk  modulus, B_R = {0}  GPa'.format('%8.2f'%(BR))
-print >>fo, '    Reuss shear modulus, G_R = {0}  GPa'.format('%8.2f'%(GR)) + '\n'
+print('    Reuss bulk  modulus, B_R = {0}  GPa'.format('%8.2f'%(BR)),file=fo)
+print('    Reuss shear modulus, G_R = {0}  GPa'.format('%8.2f'%(GR)) + '\n',file=fo)
 
-print >>fo, '    Hill bulk  modulus,  B_H = {0}  GPa'.format('%8.2f'%(BH))
-print >>fo, '    Hill shear modulus,  G_H = {0}  GPa'.format('%8.2f'%(GH))
+print('    Hill bulk  modulus,  B_H = {0}  GPa'.format('%8.2f'%(BH)),file=fo)
+print('    Hill shear modulus,  G_H = {0}  GPa'.format('%8.2f'%(GH)),file=fo)
 
-print >>fo, '\n'+ lineseparator +'\n'
+print('\n'+ lineseparator +'\n',file=fo)
 
-print >>fo, '    Voigt Young modulus,  E_V = {0}  GPa'.format('%8.2f'%(EV))
-print >>fo, '    Voigt Poisson ratio, nu_V = {0}'     .format('%8.2f'%(nuV)) + '\n'
+print('    Voigt Young modulus,  E_V = {0}  GPa'.format('%8.2f'%(EV)),file=fo)
+print('    Voigt Poisson ratio, nu_V = {0}'     .format('%8.2f'%(nuV)) + '\n',file=fo)
 
-print >>fo, '    Reuss Young modulus,  E_R = {0}  GPa'.format('%8.2f'%(ER))
-print >>fo, '    Reuss Poisson ratio, nu_R = {0}'     .format('%8.2f'%(nuR)) + '\n'
+print('    Reuss Young modulus,  E_R = {0}  GPa'.format('%8.2f'%(ER)),file=fo)
+print('    Reuss Poisson ratio, nu_R = {0}'     .format('%8.2f'%(nuR)) + '\n',file=fo)
 
-print >>fo, '    Hill Young modulus,   E_H = {0}  GPa'.format('%8.2f'%(EH))
-print >>fo, '    Hill Poisson ratio,  nu_H = {0}'     .format('%8.2f'%(nuH))
+print('    Hill Young modulus,   E_H = {0}  GPa'.format('%8.2f'%(EH)),file=fo)
+print('    Hill Poisson ratio,  nu_H = {0}'     .format('%8.2f'%(nuH)),file=fo)
 
-print >>fo, '\n'+ lineseparator +'\n'
+print('\n'+ lineseparator +'\n',file=fo)
 
-print >>fo, '    Elastic Anisotropy in polycrystalline, AVR = {0} %'.format('%8.3f'%(AVR))
+print('    Elastic Anisotropy in polycrystalline, AVR = {0} %'.format('%8.3f'%(AVR)),file=fo)
 
-print >>fo, '\n'+ lineseparator +'\n'
+print('\n'+ lineseparator +'\n',file=fo)
 
-print >>fo, '    Eigenvalues of elastic constant (stiffness) matrix:   \n'
+print('    Eigenvalues of elastic constant (stiffness) matrix:   \n',file=fo)
 
 eigval=linalg.eig(C)
 for i in range(6):
-    print >>fo,'%16.1f' % float(eigval[0][i])
+    print('%16.1f' % float(eigval[0][i]),file=fo)
 
-print >>fo,'\n    ... Have a G00D Day, Week, Month, Year, and Century (if you are lucky) ...    '\
-           '\n               Bye-Bye! Tschuess! Ciao! Poka! Zia Jian! KhodaHafez!             \n'
+print('\n    ... Have a G00D Day, Week, Month, Year, and Century (if you are lucky) ...    '\
+           '\n               Bye-Bye! Tschuess! Ciao! Poka! Zia Jian! KhodaHafez!             \n',file=fo)
 fo.close()
 #--------------------------------------------------------------------------------------------------
 os.chdir('../')
