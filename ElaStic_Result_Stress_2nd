@@ -524,7 +524,7 @@ if (len(sigma) != 6*NoD):
     sys.exit('\n.... Oops ERROR: Something is WRONG in the "ElaStic_2nd.in" file !?!?!?\n')
 
 sigma = np.array(sigma)
-ci    = linalg.lstsq(Matrix,sigma)
+ci    = linalg.lstsq(Matrix,sigma,rcond=None)
 C     = zeros((6,6))
 
 #-- Cubic structures ------------------------------------------------------------------------------
