@@ -29,6 +29,7 @@ import copy
 import math
 import sys
 import os
+import matplotlib.pyplot as plt
 
 #%!%!%--- SUBROUTINS AND FUNCTIONS ---%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%!%
 def sortlist(lst1, lst2):
@@ -343,6 +344,9 @@ for i in range(1, NoD+1):
         Dstn = 'Dst' +str(i)
 
     LSi_dic = {1:'LS1',2:'LS2',3:'LS3',4:'LS4',5:'LS5',6:'LS6'}
+
+
+    # every Langerange strain
     for l in range(1,7):
 
         if (ordr == 2):
@@ -354,12 +358,18 @@ for i in range(1, NoD+1):
         print('# Max. eta    SUM(Cij) \n#',file=fD)
         print('# Max. eta    Cross-Validation error   \n#',file=fE)
 
+        #empty dictionaries
+        fcc = {}
+        cve = {}
+        
         for j in range(ordr+3, ordr-2, -2):
             if  (j == 2): nth = '2nd'
             elif(j == 3): nth = '3rd'
             else:
                 nth = str(j) + 'th'
-
+            #initial dictionaries
+            fcc[nth] = [[],[]]
+            cve[nth] = [[],[]]
             print('\n# '+ nth +' order fit.',file=fD)
             print('\n# '+ nth +' order fit.',file=fE)
 
@@ -408,7 +418,7 @@ for i in range(1, NoD+1):
             strain, stress = sortlist(strain, stress)
             strain0 = copy.copy(strain)
             stress0 = copy.copy(stress)
-
+            
             #--- first derivative coefficient calculation -----------------------------------------
             while (len(strain) > j):
                 emax=max(strain)
@@ -419,6 +429,9 @@ for i in range(1, NoD+1):
                     Cij = coeffs[j-1] * CONV         # in GPa unit 
                 if (ordr == 3):
                     Cij = coeffs[j-2] * CONV * 0.001 # in TPa unit
+                
+                fcc[nth][0].append(emax)
+                fcc[nth][1].append(Cij)
 
                 print('%13.10f'%emax, '%18.6f'%Cij,file=fD)
                 if (abs(strain[0]+emax) < 1.e-7):
@@ -450,6 +463,10 @@ for i in range(1, NoD+1):
                     S = S + (Yfit-Y)**2
 
                 CV = sqrt(S/len(strain))
+
+                cve[nth][0].append(emax)
+                cve[nth][1].append(CV)
+
                 print('%13.10f'%emax, CV,file=fE)
 
                 if (abs(strain[0]+emax) < 1.e-7):
@@ -462,58 +479,28 @@ for i in range(1, NoD+1):
         fE.close()
 
         #--- Plotting -----------------------------------------------------------------------------
-    
-        if (os.path.exists('Grace.par') == False):
-            os.system("cp -f $ElaSticROOT/Grace.par .")
+        
+        fig, ax = plt.subplots()
+#plot for SUM(Cij)
+#        for key in fcc.keys():
+#            x = np.array(fcc[key][0])
+#            y = np.array(fcc[key][1])
+#            ax.plot(x,y,'o-',label="n="+key)
+#            ax.set_xlabel('max strain')
+#            ax.set_ylabel('SUM(Cij)')
+        
+        for key in cve.keys():
+            x = np.array(cve[key][0])
+            y = np.array(cve[key][1])
+            ax.plot(x,y,'o-',label="n="+key)
+            ax.set_xlabel('max_strain')
+            ax.set_ylabel('CV error')
 
-        Gf    = open("Grace.par", 'r')
-        Glines= Gf.readlines()
-        Gf.close()
+        ax.legend()
+        plt.title('plot for '+ Dstn+'_'+LSi_dic[l]+', n = Order of polynomial fit')
 
-        TMP = []
-        if (ordr == 2):
-            for k in range(95, 122):
-                TMP.append(Glines[k])
+plt.show()
 
-        if (ordr == 3):
-            for k in range(125, 151):
-                TMP.append(Glines[k])
-
-        for k in range(164, 219):
-            TMP.append(Glines[k])
-
-        TMP.insert(82,'    s2 legend  " n = '+str(ordr-1)+'"\n')
-        TMP.insert(74,'    s1 legend  " n = '+str(ordr+1)+'"\n')
-        TMP.insert(66,'    s0 legend  " n = '+str(ordr+3)+'"\n')
-        TMP.insert(29,'    subtitle "Plot for '+ Dstn +'_'+LSi_dic[l]+' , n = Order of polynomial fit"\n')
-    
-        GdE = open(Dstn+'_'+LSi_dic[l]+'_d'+str(ordr-1)+'S.par', 'w')
-        for k in range(len(TMP)):
-            print(TMP[k],file=GdE)
-        GdE.close()
-
-        os.system('xmgr '+Dstn+'_'+LSi_dic[l]+'_d'+str(ordr-1)+'S.dat -param '+Dstn+'_'+LSi_dic[l]+'_d1S.par -saveall '\
-                            +Dstn+'_'+LSi_dic[l]+'_d'+str(ordr-1)+'S.agr &')
-
-        TMP = []
-        for k in range(154, 162):
-            TMP.append(Glines[k])
-
-        for k in range(164, 219):
-            TMP.append(Glines[k])
-
-        TMP.insert(63,'    s2 legend  " n = '+str(ordr-1)+'"\n')
-        TMP.insert(55,'    s1 legend  " n = '+str(ordr+1)+'"\n')
-        TMP.insert(47,'    s0 legend  " n = '+str(ordr+3)+'"\n')
-        TMP.insert(10,'    subtitle "Plot for '+ Dstn +'_'+LSi_dic[l]+' , n = Order of polynomial fit"\n')
-
-        CVe = open(Dstn+'_'+LSi_dic[l]+'_CVe.par', 'w')
-        for k in range(len(TMP)):
-            print(TMP[k],file=CVe)
-        CVe.close()
-
-        os.system('xmgr '+Dstn+'_'+LSi_dic[l]+'_CVe.dat -param '+Dstn+'_'+LSi_dic[l]+'_CVe.par -saveall '\
-                            +Dstn+'_'+LSi_dic[l]+'_CVe.agr &')
 
 os.chdir('../')
 
@@ -533,4 +520,3 @@ for i in range(1, NoD+1):
                  '        Fit_order1   Fit_order2   Fit_order3   Fit_order4   Fit_order5   Fit_order6 \n',file=fri)
 fri.close()
 #--------------------------------------------------------------------------------------------------
-os.system('rm -f Stress-vs-Strain/Grace.par')
