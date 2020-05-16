@@ -247,12 +247,17 @@ for i in range(1, ECs+1):
     print('# Max. eta    SUM(Cij) \n#',file=FD)
     print('# Max. eta    Cross-Validation Error   \n#',file=FE)
 
+    fcc = {}
+    cve = {}
+
     for j in range(ordr+4, ordr-1, -2):
         if  (j == 2): nth = '2nd'
         elif(j == 3): nth = '3rd'
         else:
             nth = str(j) + 'th'
-
+        
+        fcc[nth] = [[],[]]
+        cve[nth] = [[],[]]
         print('\n# '+ nth +' order fit.',file=FD)
         print('\n# '+ nth +' order fit.',file=FE)
 
@@ -292,6 +297,8 @@ for i in range(1, ECs+1):
             if (ordr == 3):
                 Cij  = coeffs[j-3]*CONV/V0 * 0.001 # in TPa unit
 
+            fcc[nth][0].append(emax)
+            fcc[nth][1].append(Cij)
             print('%13.10f'%emax, '%18.6f'%Cij,file=FD)
 
             if (abs(strain[0]+emax) < 1.e-7):
@@ -324,6 +331,9 @@ for i in range(1, ECs+1):
                 S    = S + (Yfit-Y)**2
 
             CV = sqrt(S/len(strain))
+
+            cve[nth][0].append(emax)
+            cve[nth][1].append(CV)
             print('%13.10f'%emax, CV,file=FE)
 
             if (abs(strain[0]+emax) < 1.e-7):
@@ -336,57 +346,25 @@ for i in range(1, ECs+1):
     fE.close()
     
     #-- Plotting ----------------------------------------------------------------------------------
-    if (os.path.exists('Grace.par') == False):
-        os.system("cp -f $ElaSticROOT/Grace.par .")
+    fig, ax = plt.subplots()
+#plot for SUM(Cij)
+#   for key in fcc.keys():
+#       x = np.array(fcc[key][0])
+#       y = np.array(fcc[key][1])
+#       ax.plot(x,y,'o-',label="n="+key)
+#       ax.set_xlabel('max strain')
+#       ax.set_ylabel('SUM(Cij)')
+        
+    for key in cve.keys():
+        x = np.array(cve[key][0])
+        y = np.array(cve[key][1])
+        ax.plot(x,y,'o-',label="n="+key)
+        ax.set_xlabel('max_strain')
+        ax.set_ylabel('CV error')
 
-    Gf    = open('Grace.par', 'r')
-    Glines= Gf.readlines()
-    Gf.close()
-
-    TMP = []
-    if (ordr == 2):
-        for k in range(1, 45):
-            TMP.append(Glines[k])
-
-    if (ordr == 3):
-        for k in range(48, 92):
-            TMP.append(Glines[k])
-
-    for k in range(164, 219):
-        TMP.append(Glines[k])
-
-    TMP.insert(99,'    s2 legend  " n = '+str(ordr+0)+'"\n')
-    TMP.insert(91,'    s1 legend  " n = '+str(ordr+2)+'"\n')
-    TMP.insert(83,'    s0 legend  " n = '+str(ordr+4)+'"\n')
-    TMP.insert(46,'    subtitle "Plot for '+ Dstn +' deformation, n = Order of polynomial fit"\n')
-
-    GdE = open(Dstn+'_d'+str(ordr)+'E.par', 'w')
-    for l in range(len(TMP)):
-        print(TMP[l],file=GdE)
-    GdE.close()
-
-    os.system('xmgrace '+ Dstn +'_d'+str(ordr)+'E.dat -param '  + \
-                          Dstn +'_d'+str(ordr)+'E.par -saveall '+ \
-                          Dstn+'_d'+str(ordr)+'E.agr &')
-
-    TMP = []
-    for k in range(154, 162):
-        TMP.append(Glines[k])
-
-    for k in range(164, 219):
-        TMP.append(Glines[k])
-
-    TMP.insert(63,'    s2 legend  " n = '+str(ordr+0)+'"\n')
-    TMP.insert(55,'    s1 legend  " n = '+str(ordr+2)+'"\n')
-    TMP.insert(47,'    s0 legend  " n = '+str(ordr+4)+'"\n')
-    TMP.insert(10,'    subtitle "Plot for '+ Dstn +' deformation, n = Order of polynomial fit"\n')
-
-    CVe = open(Dstn+'_CVe.par', 'w')
-    for k in range(len(TMP)):
-        print(TMP[k],file=CVe)
-    CVe.close()
-
-    os.system('grace '+ Dstn +'_CVe.dat -param '+ Dstn +'_CVe.par -saveall '+ Dstn +'_CVe.agr &')
+    ax.legend()
+    plt.title('plot for '+ Dstn+'_'+LSi_dic[l]+', n = Order of polynomial fit')
+plt.show()
 
 os.chdir('../')
 
