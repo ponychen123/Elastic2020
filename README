@@ -1,14 +1,14 @@
  ABOUT
 =======
 
-                  << Welcome to ElaStic_1.0 >>
+                  << Welcome to ElaStic2020 >>
 
 This software package allows you to obtain full second-order elastic tensors (elastic constants)
 for all crystal lattice types and third-order elastic constants for cubic, hexagonal, and 
 rhombohedral crystals. 
-This code is written in Python programming language and uses the SGROUP tool as symmetry and 
-space-group calculator and utilizes Exciting, Wien2k and Quantum Espresso density-functional codes 
-for energy and stress calculations.
+This code is rewitten from ElaStic 1.0 by ponychen with python3. Ponychen use matplotlib instead of Grace to analyse 
+the CV error curves. This code use the  SGROUP tool as symmetry and space-group calculator and utilizes 
+Quantum Espresso for energy and stress calculations.
 
  DESCRIPTION
 =============
@@ -46,10 +46,6 @@ STEP 1.1:
      $ ElaStic_Setup
 
      This program requires a structural input file which can be the same as the input file of the 
-     following DFT codes:
-
-     exciting         (http://exciting-code.org/)
-     WIEN2k           (http://www.wien2k.at/)
      Quantum ESPRESSO (http://www.quantum-espresso.org/)
 
      Once the input file is ready, "ElaStic" requires these values:
@@ -64,23 +60,6 @@ STEP 1.1:
 STEP 1.2:
      Calculate the energy or stress tensor of deformed structure using one of the mentioned DFT 
      codes.
-
-     NOTICE to "WIEN2k" users:
-     A shell script program is provided under the name "ElaStic_WIEN2k_init" which allows you 
-     to initialize the deformed structures automatically.
-     Before executing this program, you must specify input variables of "WIEN2k" calculations.
-     It is recommended to copy this file to the directory where "Dst??" directories, e.g. Dst01, 
-     exist. Then, modify line 23 of this program according to the accuracy of your calculations.
-
-     The "WIEN2k_init_lapw_silent" script is the modified script file of the "init_lapw" program.
-     You find FLAGS of "WIEN2k_init_lapw_silent" program if you write following command in terminal:
-
-     $ WIEN2k_init_lapw_silent -H
-
-     Once the WIEN2k calculations are finished, you can run the following scripts to save and clean
-     your calculations.
-    
-     $ ElaStic_Save_Clean_WIEN2k
 
      NOTICE to "Quantum ESPRESSO" users:
      The output file must be saved under same name of the input file but with ".out" extension. 
@@ -101,7 +80,7 @@ STEP 2.1:
 
      $ ElaStic_Analyze
      
-     At this point, "xmgrace" plots automatically appear on your screen. For each distortion,
+     At this point, matplotlib plots automatically appear on your screen. For each distortion,
      you can find the best distortion range and the best order of polynomial fit. You can find more
      details about these issues in "ElaStic_Paper.pdf".
 
@@ -166,3 +145,4 @@ Rostam Golesorkhtabar
 Humboldt-Universität zu Berlin
 Institut für Physik und IRIS Adlershof, Theoretische Festkörperphysik
 Zum Grossen Windkanal 6, 12489 Berlin, Germany.
+Of course, you can just email me: 18709821294@outlook.com
