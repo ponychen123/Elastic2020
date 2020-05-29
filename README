@@ -18,6 +18,7 @@ STEP 0.1:
      The "ElaSticROOT" shell variable must be set by the user. For instance, add the following 
      line with the correct "ElaStic" path, in the ".bashrc" file:
      export ElaSticROOT=/home/dir1/dir2/ElaStic
+     export PATH=/home/dir1/dir2/ElaStic:$PATH
 
 STEP 0.2:
      Download and install "SGROUP" program:
