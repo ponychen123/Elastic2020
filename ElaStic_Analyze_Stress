@@ -323,6 +323,25 @@ if (os.path.exists('Stress-vs-Strain_old')):
 if (os.path.exists('Stress-vs-Strain')):
     os.rename(     'Stress-vs-Strain','Stress-vs-Strain_old')
 
+#--- Writing the "ElaStic_???.in" file ------------------------------------------------------------
+# NoD = Number of Deformation
+NoD = len(Lag_strain_list)
+
+if (ordr == 2): orth  = '2nd'
+if (ordr == 3): orth  = '3rd'
+
+fri = open('ElaStic_'+ orth +'.in', 'w')
+for i in range(1, NoD+1):
+    if (i<10):
+        Dstn = 'Dst0'+str(i)
+    else:
+        Dstn = 'Dst' +str(i)
+
+    print(Dstn+'    eta_max1     eta_max2     eta_max3     eta_max4     eta_max5     eta_max6  \n'\
+                 '        Fit_order1   Fit_order2   Fit_order3   Fit_order4   Fit_order5   Fit_order6 \n',file=fri)
+fri.close()
+#--------------------------------------------------------------------------------------------------
+
 os.mkdir('Stress-vs-Strain')
 os.chdir('Stress-vs-Strain')
 
@@ -334,8 +353,7 @@ os.system('cp -f ../Dst??/Dst??_Lagrangian-stress.dat .')
 if (cod == 'ESPRESSO'):
     CONV = (1-ordr)/10.
 
-# NoD = Number of Deformation
-NoD = len(Lag_strain_list)
+
 
 for i in range(1, NoD+1):
     if (i<10):
@@ -504,19 +522,3 @@ plt.show()
 
 os.chdir('../')
 
-#--- Writing the "ElaStic_???.in" file ------------------------------------------------------------
-
-if (ordr == 2): orth  = '2nd'
-if (ordr == 3): orth  = '3rd'
-
-fri = open('ElaStic_'+ orth +'.in', 'w')
-for i in range(1, NoD+1):
-    if (i<10):
-        Dstn = 'Dst0'+str(i)
-    else:
-        Dstn = 'Dst' +str(i)
-
-    print(Dstn+'    eta_max1     eta_max2     eta_max3     eta_max4     eta_max5     eta_max6  \n'\
-                 '        Fit_order1   Fit_order2   Fit_order3   Fit_order4   Fit_order5   Fit_order6 \n',file=fri)
-fri.close()
-#--------------------------------------------------------------------------------------------------
